@@ -39,5 +39,8 @@
   },
   "peerDependencies": {
     "mongodb": "^3.4.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@MobileheadHolding"
   }
 }

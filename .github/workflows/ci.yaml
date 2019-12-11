@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+jobs:
+  deploy_ui_kit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - id: use_node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: ci_cache
+        id: ci_cache
+        uses: actions/cache@v1
+        with:
+          key: ci_cache-${{ hashFiles('**/yarn.lock') }}
+          path: node_modules
+          restore-keys: |
+            ci_cache-${{ hashFiles('**/yarn.lock') }}
+            ci_cache-
+
+      - name: install
+        id: install
+        run: |
+          mkdir -p ci_cache/global_yarn_cache
+          yarn install --frozen-lockfile --cache-folder ci_cache/global_yarn_cache
+
+      - id: test
+        name: test
+        run: |
+          npm run test
+
+      - id: publish
+        name: publish
+        uses: primer/publish@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_REGISTRY_URL: https://npm.pkg.github.com
