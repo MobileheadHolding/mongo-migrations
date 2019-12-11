@@ -102,23 +102,18 @@ export class Migration {
 
     this.preFlightTest(existingMigrations);
 
-    try {
-      for (let i = 0; i < this.migrations.length; i++) {
-        const currentMigration = this.migrations[i];
-        if (this.shouldRunMigration(currentMigration, existingMigrations)) {
-          console.info(`executing migration ${currentMigration.name}`);
-          await this.runMigration(currentMigration, db);
-          await migrationCollection.insertOne({
-            name: currentMigration.name,
-            step: i,
-            createdAt: new Date()
-          });
-        }
+    for (let i = 0; i < this.migrations.length; i++) {
+      const currentMigration = this.migrations[i];
+      if (this.shouldRunMigration(currentMigration, existingMigrations)) {
+        console.info(`executing migration ${currentMigration.name}`);
+        await this.runMigration(currentMigration, db);
+        await migrationCollection.insertOne({
+          name: currentMigration.name,
+          step: i,
+          createdAt: new Date()
+        });
       }
-      console.info("finished migration process");
-    } catch (e) {
-      console.error(e);
-      process.exit(1);
     }
+    console.info("finished migration process");
   }
 }
