@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "",
+    "prepublishOnly": "npm run build && cp -r ./dist/* . && rm -rf ./dist",
+    "postpublish": "git clean -fd",
+    "build": "rm -rf ./dist && tsc --project tsconfig.json",
     "test": "jest"
   },
   "repository": {

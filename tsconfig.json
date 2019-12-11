@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "noEmitOnError": true,
+    "lib": ["es2016", "dom"],
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "declaration": true
+  },
+  "exclude": ["node_modules", "src/**/*.test.ts"]
+}
