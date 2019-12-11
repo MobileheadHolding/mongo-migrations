@@ -48,4 +48,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          args: ["--", "--registry=https://npm.pkg.github.com"]
+          NPM_REGISTRY_URL: "https://npm.pkg.github.com"
