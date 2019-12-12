@@ -43,7 +43,7 @@ jobs:
       - id: publish
         name: publish
         uses: primer/publish@v2.0.0
+        args: ["--", "--unsafe-perm"]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          args: "--access public -- --unsafe-perm"
