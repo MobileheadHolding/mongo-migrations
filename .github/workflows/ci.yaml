@@ -66,5 +66,5 @@ jobs:
             yarn publish
           else
             yarn release
-            yarn publish
+            git push --follow-tags origin master && yarn publish
           fi
