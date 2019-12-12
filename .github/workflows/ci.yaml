@@ -12,9 +12,7 @@ jobs:
         id: info
         shell: bash
         run: |
-          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
           echo "##[set-output name=node_version;]$(cat .nvmrc)"
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >>.npmrc
 
       - id: use_node
         uses: actions/setup-node@v1
@@ -40,12 +38,11 @@ jobs:
       - id: test
         name: test
         run: |
-          npm run test
+          yarn test
 
       - id: publish
         name: publish
         uses: primer/publish@v2.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_REGISTRY_URL: "https://npm.pkg.github.com"
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
