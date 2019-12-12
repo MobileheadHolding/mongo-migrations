@@ -58,8 +58,7 @@ export class Migration {
     migration: MigrationFile,
     existingMigrations: MigrationDocument[]
   ) {
-    if (existingMigrations.find(m => m.name === migration.name)) return false;
-    return true;
+    return !existingMigrations.find(m => m.name === migration.name);
   }
 
   /**
@@ -117,3 +116,5 @@ export class Migration {
     console.info("finished migration process");
   }
 }
+
+export * from "./types";
