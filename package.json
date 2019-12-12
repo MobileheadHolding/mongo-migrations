@@ -2,10 +2,10 @@
   "name": "@mobileheadholding/mongo-migrations",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "prepublishOnly": "npm run build && cp -r ./dist/* . && rm -rf ./dist",
-    "postpublish": "git clean -fd",
+    "doesntworkprepublishOnly": "npm run build && cp -r ./dist/* . && rm -rf ./dist",
+    "doesntworkpostpublish": "git clean -fd",
     "build": "rm -rf ./dist && tsc --project tsconfig.json",
     "test": "jest"
   },
@@ -39,5 +39,8 @@
   },
   "peerDependencies": {
     "mongodb": "^3.4.0"
-  }
+  },
+  "files": [
+    "dist/*"
+  ]
 }
