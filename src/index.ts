@@ -116,3 +116,5 @@ export class Migration {
     console.info("finished migration process");
   }
 }
+
+export * from "./types";
