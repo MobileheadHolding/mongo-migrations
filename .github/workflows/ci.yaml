@@ -12,8 +12,11 @@ jobs:
         id: info
         shell: bash
         run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
           echo "##[set-output name=node_version;]$(cat .nvmrc)"
           echo "##[set-output name=yarn_cache;]$(yarn cache dir)"
+          git config user.name "GitHub Actions Build"
+          git config user.email "developers@mobilehead.com"
 
       - id: use_node
         uses: actions/setup-node@v1
