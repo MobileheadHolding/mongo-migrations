@@ -23,14 +23,22 @@ jobs:
         with:
           node-version: ${{ steps.info.outputs.node_version }}
 
-      - name: ci_cache
-        id: ci_cache
+      - name: yarn_cache
+        id: yarn_cache
         uses: actions/cache@v1
         with:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           path: ${{ steps.info.outputs.yarn_cache }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
+      - name: node_modules_cache
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-node_modules_cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-node_modules_cache-
 
       - name: install
         id: install
