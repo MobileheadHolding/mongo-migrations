@@ -6,7 +6,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2-beta
+      - uses: actions/checkout@v1
 
       - name: info
         id: info
@@ -58,4 +58,4 @@ jobs:
       - id: release
         name: release
         run: |
-          yarn release -- --prerelease ${{ github.event.pull_request.head.sha }}
+          yarn release --prerelease ${{ github.sha }}
