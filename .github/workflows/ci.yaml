@@ -58,7 +58,8 @@ jobs:
       - id: release
         name: release
         run: |
-          if ${{ steps.info.outputs.branch }} != 'master'; then
+          if ['${{ steps.info.outputs.branch }}' != 'master']
+          then
             yarn release --prerelease ${{ github.sha }}
           else
             yarn release
