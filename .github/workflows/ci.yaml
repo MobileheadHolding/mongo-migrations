@@ -58,4 +58,4 @@ jobs:
       - id: release
         name: release
         run: |
-          yarn release -- --prerelease
+          yarn release -- --prerelease ${{ steps.info.outputs.branch }}
