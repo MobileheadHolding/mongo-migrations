@@ -3,7 +3,8 @@ name: ci
 on:
   push:
 jobs:
-  deploy_ui_kit:
+  release:
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -12,28 +13,37 @@ jobs:
         id: info
         shell: bash
         run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
           echo "##[set-output name=node_version;]$(cat .nvmrc)"
+          echo "##[set-output name=yarn_cache;]$(yarn cache dir)"
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
 
       - id: use_node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.info.outputs.node_version }}
 
-      - name: ci_cache
-        id: ci_cache
+      - name: yarn_cache
+        id: yarn_cache
         uses: actions/cache@v1
         with:
-          key: ci_cache-${{ hashFiles('**/yarn.lock') }}
-          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.info.outputs.yarn_cache }}
           restore-keys: |
-            ci_cache-${{ hashFiles('**/yarn.lock') }}
-            ci_cache-
+            ${{ runner.os }}-yarn-
+
+      - name: node_modules_cache
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-node_modules_cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-node_modules_cache-
 
       - name: install
         id: install
         run: |
-          mkdir -p ci_cache/global_yarn_cache
-          yarn install --frozen-lockfile --cache-folder ci_cache/global_yarn_cache
+          yarn install --frozen-lockfile
 
       - id: test
         name: test
@@ -45,10 +55,18 @@ jobs:
         run: |
           yarn build
 
-      - id: publish
-        name: publish
-        uses: primer/publish@v2.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          args: "-- --unsafe-perm"
+      - id: release
+        name: release
+        run: |
+          git config user.name "GitHub Actions Build"
+          git config user.email "developers@mobilehead.com"
+          git checkout ${{ steps.info.outputs.branch }}
+          git remote set-url origin "https://MobileheadBot:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+          if [[ "${{ steps.info.outputs.branch }}" != "master" ]]
+          then
+            yarn release  --message "chore(release): Release v%s :tada: [ci skip]" --prerelease ${{ github.sha }}
+            yarn publish
+          else
+            yarn release --message "chore(release): Release v%s :tada: [ci skip]"
+            git push --follow-tags origin master && yarn publish
+          fi
