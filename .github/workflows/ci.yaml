@@ -60,6 +60,7 @@ jobs:
       - id: release
         name: release
         run: |
+          git checkout ${{ steps.info.outputs.branch }}
           if [[ "${{ steps.info.outputs.branch }}" != "master" ]]
           then
             yarn release  --message "chore(release): Release v%s :tada: [ci skip]" --prerelease ${{ github.sha }}
