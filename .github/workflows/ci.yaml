@@ -61,6 +61,7 @@ jobs:
           git config user.name "GitHub Actions Build"
           git config user.email "developers@mobilehead.com"
           git checkout ${{ steps.info.outputs.branch }}
+          git remote set-url origin "https://MobileheadBot:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
           [[ -z "$(git status --porcelain)" ]]
           if [[ "${{ steps.info.outputs.branch }}" != "master" ]]
           then
