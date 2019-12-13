@@ -13,7 +13,6 @@ jobs:
         id: info
         shell: bash
         run: |
-          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
           echo "##[set-output name=node_version;]$(cat .nvmrc)"
           echo "##[set-output name=yarn_cache;]$(yarn cache dir)"
           git config user.name "GitHub Actions Build"
@@ -60,11 +59,11 @@ jobs:
       - id: release
         name: release
         run: |
-          if [[ "${{ steps.info.outputs.branch }}" != "master" ]]
+          if [[ "${{ github.ref }}" != "master" ]]
           then
-            yarn release --prerelease ${{ github.sha }}
-            yarn publish
+            yarn release  --message "chore(release): Release v%s :tada: [ci skip]" --prerelease ${{ github.sha }}
+            git push --follow-tags origin ${{ github.ref }}
           else
-            yarn release
+            yarn release --message "chore(release): Release v%s :tada: [ci skip]"
             git push --follow-tags origin master && yarn publish
           fi
