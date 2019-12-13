@@ -62,11 +62,10 @@ jobs:
           git config user.email "developers@mobilehead.com"
           git checkout ${{ steps.info.outputs.branch }}
           git remote set-url origin "https://MobileheadBot:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
-          [[ -z "$(git status --porcelain)" ]]
           if [[ "${{ steps.info.outputs.branch }}" != "master" ]]
           then
             yarn release  --message "chore(release): Release v%s :tada: [ci skip]" --prerelease ${{ github.sha }}
-            git push --follow-tags origin ${{ steps.info.outputs.branch }}
+            yarn publish
           else
             yarn release --message "chore(release): Release v%s :tada: [ci skip]"
             git push --follow-tags origin master && yarn publish
