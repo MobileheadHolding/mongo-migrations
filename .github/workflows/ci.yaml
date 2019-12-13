@@ -16,8 +16,6 @@ jobs:
           echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
           echo "##[set-output name=node_version;]$(cat .nvmrc)"
           echo "##[set-output name=yarn_cache;]$(yarn cache dir)"
-          git config user.name "GitHub Actions Build"
-          git config user.email "developers@mobilehead.com"
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
 
       - id: use_node
@@ -60,7 +58,10 @@ jobs:
       - id: release
         name: release
         run: |
+          git config user.name "GitHub Actions Build"
+          git config user.email "developers@mobilehead.com"
           git checkout ${{ steps.info.outputs.branch }}
+          [[ -z "$(git status --porcelain)" ]]
           if [[ "${{ steps.info.outputs.branch }}" != "master" ]]
           then
             yarn release  --message "chore(release): Release v%s :tada: [ci skip]" --prerelease ${{ github.sha }}
