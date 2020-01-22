@@ -1,12 +1,12 @@
-import { Db } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 
 export type MigrationFile = {
   // unique name of migration file
   name: string;
   // method to be run if the previous one succeeds
-  up: (db: Db) => Promise<void>;
+  up: (db: Db, client?: MongoClient) => Promise<void>;
   // method to be run if the current one failed
-  down?: (db: Db) => Promise<void>;
+  down?: (db: Db, client?: MongoClient) => Promise<void>;
 };
 
 export type MigrationOptions = {
