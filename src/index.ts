@@ -67,10 +67,10 @@ export class Migration {
    * @param db
    */
   private async runMigration(migration: MigrationFile, db: Db) {
-    await migration.up(db).catch(async e => {
+    await migration.up(db, this.client).catch(async e => {
       console.error("failed up migration:", migration.name, e);
       if (migration.down) {
-        await migration.down(db).catch(e => {
+        await migration.down(db, this.client).catch(e => {
           console.error("failed down migration:", migration.name, e);
         });
       }
