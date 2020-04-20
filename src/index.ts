@@ -1,4 +1,4 @@
-import { MongoClient, Db } from "mongodb";
+import { Db } from "mongodb";
 import { MigrationFile, MigrationOptions, MigrationDocument } from "./types";
 
 function expectUniqueNames(migrations: MigrationFile[]) {
@@ -25,16 +25,12 @@ function expectCorrectOrder(
 }
 
 export class Migration {
-  private client: MongoClient;
+  private db: Db;
   private options: MigrationOptions;
   private migrations: MigrationFile[] = [];
 
-  constructor(
-    client: MongoClient,
-    options: MigrationOptions,
-    migrations?: MigrationFile[]
-  ) {
-    this.client = client;
+  constructor(db: Db, options: MigrationOptions, migrations?: MigrationFile[]) {
+    this.db = db;
     this.options = options;
     this.migrations = migrations;
   }
@@ -67,10 +63,10 @@ export class Migration {
    * @param db
    */
   private async runMigration(migration: MigrationFile, db: Db) {
-    await migration.up(db, this.client).catch(async e => {
+    await migration.up(db).catch(async e => {
       console.error("failed up migration:", migration.name, e);
       if (migration.down) {
-        await migration.down(db, this.client).catch(e => {
+        await migration.down(db).catch(e => {
           console.error("failed down migration:", migration.name, e);
         });
       }
@@ -90,9 +86,7 @@ export class Migration {
    * executes the migration
    */
   public async migrate() {
-    const db = this.options.database
-      ? this.client.db(this.options.database)
-      : this.client.db();
+    const db = this.db;
     const migrationCollection = db.collection(this.options.collection);
     const existingMigrations = await migrationCollection
       .find<MigrationDocument>()
