@@ -1,6 +1,5 @@
 import { MongoClient, Db } from "mongodb";
 import { Migration } from "./index";
-import { classBody } from "@babel/types";
 
 async function upStub(): Promise<void> {}
 
@@ -30,7 +29,7 @@ describe("migrations", () => {
     ];
     const spy1 = spyOn(migrations[0], "up").and.callThrough();
     const migrationRunner = new Migration(
-      client,
+      db,
       {
         collection: MIGRATION_COLLECTION
       },
@@ -51,7 +50,7 @@ describe("migrations", () => {
       { up: upStub, name: "migration2" }
     ];
     const firstMigrationRunner = new Migration(
-      client,
+      db,
       {
         collection: MIGRATION_COLLECTION
       },
@@ -65,7 +64,7 @@ describe("migrations", () => {
     ];
     const spy1 = spyOn(migrations[0], "up").and.callThrough();
     const migrationRunner = new Migration(
-      client,
+      db,
       {
         collection: MIGRATION_COLLECTION
       },
@@ -88,7 +87,7 @@ describe("migrations", () => {
     const spy1 = spyOn(migrations[0], "up").and.callThrough();
     const spy2 = spyOn(migrations[1], "up").and.callThrough();
     const migrationRunner = new Migration(
-      client,
+      db,
       {
         collection: MIGRATION_COLLECTION
       },
@@ -110,7 +109,7 @@ describe("migrations", () => {
       { up: failingUpStub, down: downStub, name: "migration2" }
     ];
     const migrationRunner = new Migration(
-      client,
+      db,
       {
         collection: MIGRATION_COLLECTION
       },

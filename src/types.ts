@@ -10,8 +10,6 @@ export type MigrationFile = {
 };
 
 export type MigrationOptions = {
-  // will fallback to the database set in uri
-  database?: string;
   // the collection used to keep track of migrations
   collection: string;
 };

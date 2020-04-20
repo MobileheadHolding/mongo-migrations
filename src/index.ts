@@ -1,10 +1,10 @@
-import { MongoClient, Db } from "mongodb";
+import { Db } from "mongodb";
 import { MigrationFile, MigrationOptions, MigrationDocument } from "./types";
 
 function expectUniqueNames(migrations: MigrationFile[]) {
   const temp = [];
   for (const migration of migrations) {
-    if (!temp.find(m => m.name === migration.name)) temp.push(migration);
+    if (!temp.find((m) => m.name === migration.name)) temp.push(migration);
     else throw new Error(`Migration: ${migration.name} is not unique`);
   }
   return true;
@@ -25,16 +25,12 @@ function expectCorrectOrder(
 }
 
 export class Migration {
-  private client: MongoClient;
+  private db: Db;
   private options: MigrationOptions;
   private migrations: MigrationFile[] = [];
 
-  constructor(
-    client: MongoClient,
-    options: MigrationOptions,
-    migrations?: MigrationFile[]
-  ) {
-    this.client = client;
+  constructor(db: Db, options: MigrationOptions, migrations?: MigrationFile[]) {
+    this.db = db;
     this.options = options;
     this.migrations = migrations;
   }
@@ -58,7 +54,7 @@ export class Migration {
     migration: MigrationFile,
     existingMigrations: MigrationDocument[]
   ) {
-    return !existingMigrations.find(m => m.name === migration.name);
+    return !existingMigrations.find((m) => m.name === migration.name);
   }
 
   /**
@@ -67,10 +63,10 @@ export class Migration {
    * @param db
    */
   private async runMigration(migration: MigrationFile, db: Db) {
-    await migration.up(db, this.client).catch(async e => {
+    await migration.up(db).catch(async (e) => {
       console.error("failed up migration:", migration.name, e);
       if (migration.down) {
-        await migration.down(db, this.client).catch(e => {
+        await migration.down(db).catch((e) => {
           console.error("failed down migration:", migration.name, e);
         });
       }
@@ -90,9 +86,7 @@ export class Migration {
    * executes the migration
    */
   public async migrate() {
-    const db = this.options.database
-      ? this.client.db(this.options.database)
-      : this.client.db();
+    const db = this.db;
     const migrationCollection = db.collection(this.options.collection);
     const existingMigrations = await migrationCollection
       .find<MigrationDocument>()
@@ -109,7 +103,7 @@ export class Migration {
         await migrationCollection.insertOne({
           name: currentMigration.name,
           step: i,
-          createdAt: new Date()
+          createdAt: new Date(),
         });
       }
     }
