@@ -11,7 +11,9 @@ export type MigrationFile = {
 
 export type MigrationOptions = {
   // the collection used to keep track of migrations
-  collection: string;
+  collection?: string;
+  // log what it is going on
+  verbose?: boolean;
 };
 
 export type MigrationDocument = {

@@ -24,6 +24,11 @@ function expectCorrectOrder(
   return true;
 }
 
+const defaultOptions: MigrationOptions = {
+  verbose: false,
+  collection: "migrations",
+};
+
 export class Migration {
   private db: Db;
   private options: MigrationOptions;
@@ -31,7 +36,7 @@ export class Migration {
 
   constructor(db: Db, options: MigrationOptions, migrations?: MigrationFile[]) {
     this.db = db;
-    this.options = options;
+    this.options = Object.assign(defaultOptions, options);
     this.migrations = migrations;
   }
 
@@ -98,7 +103,8 @@ export class Migration {
     for (let i = 0; i < this.migrations.length; i++) {
       const currentMigration = this.migrations[i];
       if (this.shouldRunMigration(currentMigration, existingMigrations)) {
-        console.info(`executing migration ${currentMigration.name}`);
+        this.options.verbose &&
+          console.info(`executing migration ${currentMigration.name}`);
         await this.runMigration(currentMigration, db);
         await migrationCollection.insertOne({
           name: currentMigration.name,
@@ -107,7 +113,6 @@ export class Migration {
         });
       }
     }
-    console.info("finished migration process");
   }
 }
 
