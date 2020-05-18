@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/MobileheadHolding/mongo-migrations/compare/v0.1.3...v0.1.4) (2020-05-18)
+
+
+### Features
+
+* default collection ([#6](https://github.com/MobileheadHolding/mongo-migrations/issues/6)) ([9eb180e](https://github.com/MobileheadHolding/mongo-migrations/commit/9eb180e71a648e5659c7cbb10cddd9fb6ac670a0))
+
 ### [0.1.3](https://github.com/MobileheadHolding/mongo-migrations/compare/v0.1.2...v0.1.3) (2020-04-20)
 
 
